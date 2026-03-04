@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório de Posts</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1910px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            padding-top: 100%;
+            /* 1:1 Aspect Ratio */
+            background-color: #333;
+        }
+
+        .post-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(2, 52, 96, 0.95) 0%, rgba(2, 52, 96, 0.7) 40%, rgba(2, 52, 96, 0) 100%);
+            color: white;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            /* Vertical centering */
+            justify-content: flex-start;
+        }
+
+        .date-badge {
+            background-color: #ff6600;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 8px 12px;
+            border-radius: 0 0 10px 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .metrics-overlay {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            /* Position handled by flex container .overlay */
+        }
+
+        .metric-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .metric-item img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .data-table th {
+            background-color: #1a2b49;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            width: 50%;
+        }
+
+        .data-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .col-label {
+            color: #1a2b49;
+            font-weight: 500;
+        }
+
+        .col-value {
+            text-align: right;
+            font-weight: 400;
+        }
+
+        .table-row {
+            display: flex;
+        }
+
+        .table-half {
+            width: 50%;
+            border-right: 1px solid #ddd;
+        }
+
+        .table-half:last-child {
+            border-right: none;
+        }
+
+        .sub-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .sub-table td {
+            border-bottom: 1px solid #eee;
+            padding: 8px;
+        }
+
+        /* Custom layout to match the reference image's table structure */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th {
+            background-color: #1a2b49;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #34495e;
+        }
+
+        .comparison-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            color: #333;
+        }
+
+        .label-cell {
+            text-align: left;
+            color: #1a2b49;
+        }
+
+        .value-cell {
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="card">
+            <div class="image-container">
+                <img src="https://instagram.fqcj1-1.fna.fbcdn.net/v/t51.82787-15/572257771_18078283070133067_882472855883761708_n.heic?stp=dst-jpg_e35_tt6&_nc_cat=102&cb=8438d1d6-0aee74db&ig_cache_key=Mzc1NjM2NTc0MDQwOTUzODkyMg%3D%3D.3-ccb7-5-cb8438d1d6-0aee74db&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjE0NDB4MTgwMC5zZHIuQzMifQ%3D%3D&_nc_ohc=KGNYYi_9lqsQ7kNvwF1yyJk&_nc_oc=AdnyQipNg6EquX_MBWgSg9GuvfR0qD7nhVLlU01p5m9hG21cOW78KcYlHQyKNuZN3kHBW3C_kDjg34xPY4SDeLe_&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fqcj1-1.fna&_nc_gid=nJjA-3w-FnZPiL6Wh4y5iw&oh=00_AflxI9aadnAjOtGxmfKcIy7pNXrmBHGO-q0UqNlPSuHYdg&oe=6941A515"
+                    alt="Post Image" class="post-image">
+                <div class="date-badge">01/11</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>8.895</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>1.495</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>81</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>5,4%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">8.895</td>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">1.495</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">81</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">5,4%</td>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell">Investimento</td>
+                        <td class="value-cell">R$ 0,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="image-container">
+                <img src="https://instagram.fqcj1-1.fna.fbcdn.net/v/t51.82787-15/572118910_18078458984133067_9188588279110151508_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=109&cb=8438d1d6-0aee74db&ig_cache_key=Mzc1NzgxNTI1MTYxNTI3ODAyNA%3D%3D.3-ccb7-5-cb8438d1d6-0aee74db&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTM1MC5zZHIuQzMifQ%3D%3D&_nc_ohc=lyjlRaz0hkcQ7kNvwGUCjkp&_nc_oc=Adnp0OM_hxih_JWSjQCgKbcp8Xw1uj5XlDTQVY3rgXk4QdgsqzY0TkUj3icIsqtaJwdTroHb2YJgH6uL0lx8LLZ4&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fqcj1-1.fna&_nc_gid=nJjA-3w-FnZPiL6Wh4y5iw&oh=00_AfnVFsKoz-tGsS4pBM4Z_BLJbQIsbvyNR1-IewZ2ngJsJg&oe=694198E9"
+                    alt="Post Image" class="post-image">
+                <div class="date-badge">03/11</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>87.051</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>63.138</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>2.132</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>3,4%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">12.485</td>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">74.566</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">3.019</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">60.119</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">118</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">2.014</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">3,9%</td>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">3,4%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell">Investimento</td>
+                        <td class="value-cell">R$ 249,95</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="image-container">
+                <img src="https://instagram.fqcj1-1.fna.fbcdn.net/v/t51.82787-15/573673394_18078556055133067_1593055905514970404_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=108&cb=8438d1d6-0aee74db&ig_cache_key=Mzc1ODY2MTA4NjkzMDIxODc0NA%3D%3D.3-ccb7-5-cb8438d1d6-0aee74db&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTM1MC5zZHIuQzMifQ%3D%3D&_nc_ohc=CmBrSkVEfncQ7kNvwEORMBC&_nc_oc=AdlYZZjfOsBt_tdxDXsw0koX2OcdEqLKRgld7NiysYnhAvsUWqpo9s3kuJ_QAKQzi_6dJFa0Q_jqImV3lpPBckN6&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fqcj1-1.fna&_nc_gid=nJjA-3w-FnZPiL6Wh4y5iw&oh=00_AfkfeNU8W1Qvemfj2ru2pRz4tYyTCQNiRKLDKBWzjNM9gw&oe=694188FF"
+                    alt="Post Image" class="post-image">
+                <div class="date-badge">04/11</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>96.603</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>71.672</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>1.286</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>1,8%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">13.689</td>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">82.914</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">3.006</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">68.666</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">155</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">1.131</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">5,2%</td>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">1,6%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell">Investimento</td>
+                        <td class="value-cell">R$ 249,97</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="image-container">
+                <img src="https://instagram.fqcj1-1.fna.fbcdn.net/v/t51.82787-15/571482250_18078630527133067_7274027202510300604_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=107&cb=8438d1d6-0aee74db&ig_cache_key=Mzc1OTI2NDg0NDQ5MTkyNDE5NA%3D%3D.3-ccb7-5-cb8438d1d6-0aee74db&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTM1MC5zZHIuQzMifQ%3D%3D&_nc_ohc=SPAiS8YsRV4Q7kNvwFlf7VW&_nc_oc=AdnvgkavNzGZLGad6tRNmim7RVreRmHhuQJxZXDNM68c8qG5frTXbIoppSQp3UfpyRNSwx4GSlcEYpZS3F6SYwUt&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fqcj1-1.fna&_nc_gid=nJjA-3w-FnZPiL6Wh4y5iw&oh=00_AfnuafqdeYE79yRnuV_MqwLfQIXBpnrc3H-LAEgI9ZRXWw&oe=694188D2"
+                    alt="Post Image" class="post-image">
+                <div class="date-badge">05/11</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>47.328</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>31.920</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>2.265</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>7,1%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">10.753</td>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">36.575</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">1.034</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">30.886</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">48</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">2.217</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">4,6%</td>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">7,2%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell">Investimento</td>
+                        <td class="value-cell">R$ 249,94</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="image-container">
+                <img src="https://instagram.fqcj1-1.fna.fbcdn.net/v/t51.82787-15/571972662_18078647558133067_7416810219477690932_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=102&cb=8438d1d6-0aee74db&ig_cache_key=Mzc1OTM3MzY1NDMwMDQ3OTUyNTE4MDc4NjQ3NTU1MTMzMDY3.3-ccb7-5-cb8438d1d6-0aee74db&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=cwUM0YpX8VAQ7kNvwFs94QZ&_nc_oc=AdluVte7t-ZryWpqeopdqbL2i6GcYXKGRLSRecMWUWWjiv7MplEepGTVW-ALRxE7TWG_ywLWustZG9FWCUlln3Zl&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fqcj1-1.fna&_nc_gid=nJjA-3w-FnZPiL6Wh4y5iw&oh=00_AfkOz4Mv9C40OvKtHAT4rlnPUjDCE9TYU3x38K1Hv-bIXQ&oe=6941A4BA"
+                    alt="Post Image" class="post-image">
+                <div class="date-badge">05/11</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>73.916</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>56.232</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>7.603</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>13,5%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">1.540</td>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">72.376</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">1.086</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">55.146</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">60</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">7.543</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">5,5%</td>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">13,7%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell">Investimento</td>
+                        <td class="value-cell">R$ 249,72</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="image-container">
+                <img src="https://instagram.fqcj1-1.fna.fbcdn.net/v/t51.82787-15/573543778_18078730502133067_168410640261143574_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=100&cb=8438d1d6-0aee74db&ig_cache_key=Mzc2MDA5NjM2ODA0NTE5MjI4MDE4MDc4NzMwNDk5MTMzMDY3.3-ccb7-5-cb8438d1d6-0aee74db&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=G8OzgzY3LCQQ7kNvwGfnrIm&_nc_oc=AdmED2yiIJMHvSdXpDS3u2gdy0B9005QGyIIkpJv7l2anGjHD-FAC9LoazMHW1Pzp0WpqvKzbtilbW7fl-f9RNtz&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fqcj1-1.fna&_nc_gid=nJjA-3w-FnZPiL6Wh4y5iw&oh=00_AfkeMlvYrz3UFbREEvHg8vInoECsWUpqVWgY5Buo9RiGhw&oe=69419D71"
+                    alt="Post Image" class="post-image">
+                <div class="date-badge">06/11</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>67.762</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>51.689</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>6.469</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>12,5%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">5.023</td>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">62.739</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">3.477</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">48.212</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">199</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">6.270</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">5,7%</td>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">13,0%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell">Investimento</td>
+                        <td class="value-cell">R$ 249,81</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="image-container">
+                <img src="https://instagram.fqcj1-1.fna.fbcdn.net/v/t51.82787-15/576013117_18078813299133067_8826723007159734811_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=104&cb=8438d1d6-0aee74db&ig_cache_key=Mzc2MDgyMDU3ODg5NDc4MTYyMTE4MDc4ODEzMjk2MTMzMDY3.3-ccb7-5-cb8438d1d6-0aee74db&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjU3NngxMDI0LnNkci5DMyJ9&_nc_ohc=GzBI-qTF2MgQ7kNvwGBbGCy&_nc_oc=AdnRBja6WkAFAHn9VC5erRVzwaE4rFFYYGfBKFv4ABNNPZPzBudBNBN2Scc6lhAfFnO0mbfwqG91DzSTHjw99SJX&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fqcj1-1.fna&_nc_gid=UJ4scqdyjpSFf1AkCaGTTg&oh=00_AflnkK0uAVAIXIC0Nim5A750CLTEGsSejRx6t9BZLtQL0w&oe=6941B4BB"
+                    alt="Post Image" class="post-image">
+                <div class="date-badge">07/11</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>56.388</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>45.603</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>9.375</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>20,6%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">3.732</td>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">52.656</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">2.507</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">43.096</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">160</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">9.215</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">6,4%</td>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">21,4%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell">Investimento</td>
+                        <td class="value-cell">R$ 249,96</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="image-container">
+                <img src="https://instagram.fqcj1-1.fna.fbcdn.net/v/t51.82787-15/582596215_18079243238133067_8529086246577518488_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=106&cb=8438d1d6-0aee74db&ig_cache_key=Mzc2NDQ1NTk4NjAzMjA4MDMzNzE4MDc5MjQzMjM1MTMzMDY3.3-ccb7-5-cb8438d1d6-0aee74db&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=Mbxm9dm_R3wQ7kNvwGW2GeR&_nc_oc=Adm5x5LBV272KVOlB3SDWER7J_X9yLWInWBUg6igVwQJpeUMmbnAqkTkRYZqaow1fAbqATalaqrlux6mfFN3X_W0&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fqcj1-1.fna&_nc_gid=UJ4scqdyjpSFf1AkCaGTTg&oh=00_AflUdk2x1vRVArzjKfa6ObP5Vtu9PCwbcMGihoEyp4PLCw&oe=6941AF00"
+                    alt="Post Image" class="post-image">
+                <div class="date-badge">12/11</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>76.605</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>59.929</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>6.898</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>11,5%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">2.873</td>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">73.732</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">2.049</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">57.880</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">131</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">6.767</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">6,4%</td>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">11,7%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell">Investimento</td>
+                        <td class="value-cell">R$ 249,92</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="image-container">
+                <img src="https://instagram.fqcj1-1.fna.fbcdn.net/v/t51.82787-15/581539819_18079327733133067_7485346033497541455_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=106&cb=8438d1d6-0aee74db&ig_cache_key=Mzc2NTE4NTIzODQ2OTcyMjk1NDE4MDc5MzI3NzMwMTMzMDY3.3-ccb7-5-cb8438d1d6-0aee74db&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=LII6mcVgXioQ7kNvwFyAGcB&_nc_oc=Admnw-CDFjNNBUtn7kbf3MN-Nxd6C4NK0bVzktssbQE76nljRZpkE9-VJmrF6HlAkynnHRhnwJB5ekJCH0fCA7zM&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fqcj1-1.fna&_nc_gid=UJ4scqdyjpSFf1AkCaGTTg&oh=00_Afm9gPHXOVYVKoNC3oYc977jJkpeBqWF6qEQyX68TBkTqw&oe=6941B831"
+                    alt="Post Image" class="post-image">
+                <div class="date-badge">13/11</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>74.735</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>62.403</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>7.304</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>11,7%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">2.284</td>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">72.451</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">1.586</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">60.817</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">136</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">7.168</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">8,6%</td>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">11,8%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell">Investimento</td>
+                        <td class="value-cell">R$ 249,92</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="image-container">
+                <img src="https://instagram.fqcj1-1.fna.fbcdn.net/v/t51.82787-15/583309114_18079403282133067_8986924845098361310_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=104&cb=8438d1d6-0aee74db&ig_cache_key=Mzc2NTc4ODU0OTY5MDU2MjYwNTE4MDc5NDAzMjc5MTMzMDY3.3-ccb7-5-cb8438d1d6-0aee74db&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=vpV-3LU3wioQ7kNvwE0e9vd&_nc_oc=AdkBvV6ShBeYFTy27HtdyviyXEAbd1VT3IXjZFqXzfuhLSLJNjck8iIMfM5YQDh82UenFxhqekHxk3xdoJar10_m&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fqcj1-1.fna&_nc_gid=UJ4scqdyjpSFf1AkCaGTTg&oh=00_AfkpIrpjjKNOQjhmS--A0EGdHJ9_G2zgRmo0gH3jan4_Nw&oe=69419AD1"
+                    alt="Post Image" class="post-image">
+                <div class="date-badge">14/11</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>3.749</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>3.019</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>128</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>4,2%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">3.749</td>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">3.019</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">128</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">4,2%</td>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell">Investimento</td>
+                        <td class="value-cell">R$ 0,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="image-container">
+                <img src="https://instagram.fqcj1-1.fna.fbcdn.net/v/t51.82787-15/582351055_18079687868133067_877930453900645883_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=110&cb=8438d1d6-0aee74db&ig_cache_key=Mzc2Nzk2MjExNjM0MDEzMzU5NQ%3D%3D.3-ccb7-5-cb8438d1d6-0aee74db&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTM1MC5zZHIuQzMifQ%3D%3D&_nc_ohc=i6LZ0rzl8zcQ7kNvwEwgJhr&_nc_oc=AdnlWE4KJ-C8gC5fBQDRdbY6VceRv07XrCc7CtSPw8gvwm9hXJ-nl2N6dxwH6bW-FWOtID-8ghPGUk_sC_MzrZSG&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fqcj1-1.fna&_nc_gid=UJ4scqdyjpSFf1AkCaGTTg&oh=00_Afll3vVeWI75LCKSvTNLGQG0ctN_TjVa63WZhKS5dtCChw&oe=69418571"
+                    alt="Post Image" class="post-image">
+                <div class="date-badge">17/11</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>92.086</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>62.830</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>1.598</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>2,5%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">9.310</td>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">82.776</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">942</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">61.888</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">42</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">1.556</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">4,5%</td>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">2,5%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell">Investimento</td>
+                        <td class="value-cell">R$ 249,76</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="image-container">
+                <img src="https://instagram.fqcj1-1.fna.fbcdn.net/v/t51.82787-15/581776757_18079773716133067_1332632408365329389_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=106&cb=8438d1d6-0aee74db&ig_cache_key=Mzc2ODY4Njg5ODA2MDQzNDE5Ng%3D%3D.3-ccb7-5-cb8438d1d6-0aee74db&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTM1MC5zZHIuQzMifQ%3D%3D&_nc_ohc=tm1OVU69HhkQ7kNvwEly6re&_nc_oc=AdlANDRycSN67Q3WQs1VKod6839joqgFtWOTC3p4gVq17z_qAt287Ck-S-e9x2CJnUOwV6jiY40F75me5Gng8nxv&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fqcj1-1.fna&_nc_gid=UJ4scqdyjpSFf1AkCaGTTg&oh=00_AfnBUC_-3Ox3eqvfo3IrHSBdiFVjQNq6G80YjO6NhzUyEQ&oe=6941AEAC"
+                    alt="Post Image" class="post-image">
+                <div class="date-badge">18/11</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>83.835</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>60.488</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>2.390</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>4,0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">9.269</td>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">74.566</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">1.141</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">59.347</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">59</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">2.331</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">5,2%</td>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">3,9%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell">Investimento</td>
+                        <td class="value-cell">R$ 249,95</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="image-container">
+                <img src="https://instagram.fqcj1-1.fna.fbcdn.net/v/t51.82787-15/583472276_18079860332133067_2226938395840537068_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=102&cb=8438d1d6-0aee74db&ig_cache_key=Mzc2OTQxNDc1Mjk5Nzk2ODc4OQ%3D%3D.3-ccb7-5-cb8438d1d6-0aee74db&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTM1MC5zZHIuQzMifQ%3D%3D&_nc_ohc=7hJiiqdXkUEQ7kNvwHuTi28&_nc_oc=Adlm2Y84wMzoxU8wV2gxN1IbT1VnEsOXnL5y306VuLdXATHzBY3qNA9TMXu1kSpWV6c5t45uaDFUbTrkBXThWm0X&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fqcj1-1.fna&_nc_gid=UJ4scqdyjpSFf1AkCaGTTg&oh=00_AfmwBb-AEBtt9MNy5sdiE6Ad_DTuezmg09sBYMMYQN2Rsw&oe=6941AAE8"
+                    alt="Post Image" class="post-image">
+                <div class="date-badge">19/11</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>13.562</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>3.289</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>187</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>5,7%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">13.562</td>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">3.289</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">187</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">5,7%</td>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell">Investimento</td>
+                        <td class="value-cell">R$ 0,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="image-container">
+                <img src="https://instagram.fqcj1-1.fna.fbcdn.net/v/t51.82787-15/586857047_18079876733133067_3133339862076747604_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=105&cb=8438d1d6-0aee74db&ig_cache_key=Mzc2OTUyMDg5MjIzNDg1ODk1MDE4MDc5ODc2NzI3MTMzMDY3.3-ccb7-5-cb8438d1d6-0aee74db&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=VBUUOKpxD9YQ7kNvwG498H2&_nc_oc=Adka0QFNK563CzBogWNcn1xep8FDkuiOdApifrAToedsvUssE2eYg_ppD-ien93LOoODLE21OgOZ5ytUbl27SlVS&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fqcj1-1.fna&_nc_gid=UJ4scqdyjpSFf1AkCaGTTg&oh=00_AfmUHkUBA_w7YPB_jHMK6DAhGRxu9vYeJBa0XU_ysprUdA&oe=6941A473"
+                    alt="Post Image" class="post-image">
+                <div class="date-badge">19/11</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>32.576</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>27.944</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>3.718</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>13,3%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">1.921</td>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">30.655</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">1.474</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">26.470</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">71</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">3.647</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">4,8%</td>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">13,8%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell">Investimento</td>
+                        <td class="value-cell">R$ 249,75</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="image-container">
+                <img src="https://instagram.fqcj1-1.fna.fbcdn.net/v/t51.82787-15/583239113_18079963421133067_4772342782662094875_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=106&cb=8438d1d6-0aee74db&ig_cache_key=Mzc3MDI1ODY5NDYwOTY1NjM4NjE4MDc5OTYzNDE1MTMzMDY3.3-ccb7-5-cb8438d1d6-0aee74db&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=2bHo5ObFewkQ7kNvwEB61v7&_nc_oc=AdnwzY3uk8s_fqftmM-0acasr5dXZQXhmloVewWkiwF6qmH01SqmoI1Gil0wlFXgSTSKGJ5c622QVdly4JENPSvn&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fqcj1-1.fna&_nc_gid=UJ4scqdyjpSFf1AkCaGTTg&oh=00_AfnVb6Qfm1e6pxWrMgBLGtrk4QvRq-7BgFgLTa64bssXZA&oe=6941A2F2"
+                    alt="Post Image" class="post-image">
+                <div class="date-badge">20/11</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>29.672</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>21.574</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>3.794</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>17,6%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">2.980</td>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">26.692</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">2.088</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">19.486</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">164</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">3.630</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">7,8%</td>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">18,6%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell">Investimento</td>
+                        <td class="value-cell">R$ 249,89</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="image-container">
+                <img src="https://instagram.fqcj1-1.fna.fbcdn.net/v/t51.82787-15/587708922_18080304968133067_3103441023664649655_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=106&cb=8438d1d6-0aee74db&ig_cache_key=Mzc3MzAzNzEwNzkzMDI3NzQ4NTE4MDgwMzA0OTYyMTMzMDY3.3-ccb7-5-cb8438d1d6-0aee74db&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=NnyuhyyY07MQ7kNvwE1OROJ&_nc_oc=AdkkcbgiM_YV-RT3_OTexsrfR_T_Vj_WkXJXBpUoFF_PCD6hKlCEJL-0dfhulDLosGTp-eh_i_F5ECT5m21LXz7c&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fqcj1-1.fna&_nc_gid=UJ4scqdyjpSFf1AkCaGTTg&oh=00_AfnapSL_P6NKI_-b-0L6QG4G6-4Vu-Y9eGHhhYRhFsXWzw&oe=69419D72"
+                    alt="Post Image" class="post-image">
+                <div class="date-badge">24/11</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>29.439</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>23.798</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>3.003</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>12,6%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">2.406</td>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">27.033</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">1.799</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">21.999</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">144</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">2.859</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">8,0%</td>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">13,0%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell">Investimento</td>
+                        <td class="value-cell">R$ 199,95</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="image-container">
+                <img src="https://instagram.fqcj1-1.fna.fbcdn.net/v/t51.82787-15/590406235_18080403875133067_9211143003150586489_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=100&cb=8438d1d6-0aee74db&ig_cache_key=Mzc3MzkwNDQxMzE2NTQzNzQzMDE4MDgwNDAzODcyMTMzMDY3.3-ccb7-5-cb8438d1d6-0aee74db&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=qA-HslGVJm0Q7kNvwF0xCVJ&_nc_oc=Adm2_Evn3oIHQLXixdRcXNHiIWEE3E6uqT7c0OvbXQZHMXpRnL0Joeb7VBdm7F70UGQ1TjxThqBmBjif6RvNxATs&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fqcj1-1.fna&_nc_gid=mpv2gOnQfovCbHFpz2SwoA&oh=00_AfkNVw1MQjb_jcC2u3S3NSIUgnHieehqbUyE6Gq4P5hK0g&oe=6941A49C"
+                    alt="Post Image" class="post-image">
+                <div class="date-badge">25/11</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>27.969</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>20.357</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>6.016</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>29,6%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">2.109</td>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">25.860</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">1.444</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">18.913</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">95</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">5.921</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">6,6%</td>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">31,3%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell">Investimento</td>
+                        <td class="value-cell">R$ 249,68</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="image-container">
+                <img src="https://instagram.fqcj1-1.fna.fbcdn.net/v/t51.82787-15/587230689_18080476709133067_2512103778018780293_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=104&cb=8438d1d6-0aee74db&ig_cache_key=Mzc3NDQ4NzA3NjU3NDA5MzUzNQ%3D%3D.3-ccb7-5-cb8438d1d6-0aee74db&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTM1MC5zZHIuQzMifQ%3D%3D&_nc_ohc=WTbbjg18KfEQ7kNvwEvIXS5&_nc_oc=Adm-v4XjYHG1xv5co7x9RFCebE5eyZR70L_f2f3w__VRnSstOsaHNY5Mo0Tj21XpCY5PqMnAIDKuCxFN5nFWS6SH&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fqcj1-1.fna&_nc_gid=mpv2gOnQfovCbHFpz2SwoA&oh=00_Afks0T1oRahCBoFZ_utEeqE1DQWao7T_Io3BaMfUyYk6Uw&oe=6941B52B"
+                    alt="Post Image" class="post-image">
+                <div class="date-badge">26/11</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>57.050</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>44.286</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>1.443</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>3,3%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">7.193</td>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">49.857</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">1.258</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">43.028</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">61</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">1.382</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">4,9%</td>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">3,2%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell">Investimento</td>
+                        <td class="value-cell">R$ 199,87</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <div class="image-container">
+                <img src="https://instagram.fqcj1-1.fna.fbcdn.net/v/t51.82787-15/588441265_18080581199133067_1543292439469716886_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=104&cb=8438d1d6-0aee74db&ig_cache_key=Mzc3NTM1Mzc1NjU5MTE4Njg3OTE4MDgwNTgxMTk2MTMzMDY3.3-ccb7-5-cb8438d1d6-0aee74db&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6InhwaWRzLjEwODB4MTkyMC5zZHIuQzMifQ%3D%3D&_nc_ohc=y3tRXuqxacIQ7kNvwFmdx16&_nc_oc=AdkTXL3ERiZGexM_sZnMc7JOle2EpdeX0_WAiWmZg62Z25tNiYsUVJQU55p4keF3s1IZFbjHQGdF4ogO8-PsLChn&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fqcj1-1.fna&_nc_gid=mpv2gOnQfovCbHFpz2SwoA&oh=00_Afm310bfH9lzxgxA04FxIilDAf9n_9_3hzLwFuz3l26Qig&oe=69419105"
+                    alt="Post Image" class="post-image">
+                <div class="date-badge">27/11</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>10.179</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>8.296</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>2.094</span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>25,2%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">2.712</td>
+                        <td class="label-cell">Views</td>
+                        <td class="value-cell">7.467</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">1.907</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">6.389</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">169</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">1.925</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">8,9%</td>
+                        <td class="label-cell">Tx Interação</td>
+                        <td class="value-cell">30,1%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell">Investimento</td>
+                        <td class="value-cell">R$ 92,30</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
