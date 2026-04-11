@@ -5,9 +5,9 @@ import datetime
 
 # Configuration
 BASE_DIR = '/Users/ph/Desktop/Python/PremieRvet'
-ORG_FILE = os.path.join(BASE_DIR, 'PRM_Fev_Org.xlsx')
-PAID_FILE = os.path.join(BASE_DIR, 'PRM_Fev_Pago.xlsx')
-OUTPUT_FILE = os.path.join(BASE_DIR, 'relatorio_posts_fev.html')
+ORG_FILE = os.path.join(BASE_DIR, 'PRM_Mar_Org.xlsx')
+PAID_FILE = os.path.join(BASE_DIR, 'PRM_Mar_Pago.xlsx')
+OUTPUT_FILE = os.path.join(BASE_DIR, 'relatorio_posts_mar.html')
 ICONS_DIR = 'icons'  # Relative to OUTPUT_FILE
 
 def load_data():
@@ -296,7 +296,7 @@ def generate_html(df):
 <body>
     <header>
         <h1>Relatório de Performance</h1>
-        <p>Análise de Engajamento e Alcance - Fevereiro 2026</p>
+        <p>Análise de Engajamento e Alcance - Março 2026</p>
     </header>
 
     <div class="container">

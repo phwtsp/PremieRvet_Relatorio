@@ -1,0 +1,2040 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Performance | PremieRvet</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500;600&display=swap');
+
+        :root {
+            --primary: #023460;
+            --secondary: #ff6600;
+            --bg-body: #ffffff;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --accent-gradient: linear-gradient(135deg, #023460 0%, #1a4b8c 100%);
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding: 40px 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        header {
+            max-width: 1400px;
+            margin: 0 auto 50px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 3.5rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.15);
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            padding-top: 100%;
+            background-color: #f1f5f9;
+            overflow: hidden;
+        }
+
+        .post-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .card:hover .post-image {
+            transform: scale(1.05);
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(2, 52, 96, 0.9) 0%, rgba(2, 52, 96, 0.4) 60%, transparent 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            opacity: 1;
+            transition: var(--transition);
+        }
+
+        .date-badge {
+            background: var(--secondary);
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 6px 16px;
+            border-radius: 20px;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(255, 102, 0, 0.3);
+        }
+
+        .metrics-overlay {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .metric-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .metric-item img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .comparison-table th {
+            background-color: #f8fafc;
+            color: var(--primary);
+            padding: 15px;
+            text-align: center;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .comparison-table td {
+            padding: 12px 20px;
+            font-size: 0.95rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .label-cell {
+            text-align: left;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        
+        .value-cell {
+            text-align: right;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .invest-row {
+            background-color: #fffaf0;
+        }
+
+        .invest-row td {
+            color: var(--secondary);
+            font-weight: 700;
+        }
+
+        @media (max-width: 1400px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            header h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Relatório de Performance</h1>
+        <p>Análise de Engajamento e Alcance - Março 2026</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="1.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 02/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>2.566 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>1.593 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>56 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>3,5% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">2.566</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">1.593</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">56</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">3,5%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 0,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="2.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 03/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>3.322 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>2.190 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>70 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>3,2% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">3.322</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">2.190</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">70</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">3,2%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 0,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="3.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 05/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>12.128 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>6.083 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>348 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>5,7% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">12.128</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">6.083</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">348</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">5,7%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 0,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="4.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 05/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>30.065 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>22.089 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>3.889 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>17,6% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">5.010</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">25.055</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">3.660</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">18.429</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">212</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">3.677</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">5,8%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 199,85</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="5.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 06/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>8.152 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>4.090 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>248 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>6,1% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">8.152</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">4.090</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">248</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">6,1%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 0,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="6.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 06/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>20.975 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>14.856 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>5.222 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>35,2% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">5.561</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">15.414</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">3.538</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">11.318</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">341</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">4.881</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">9,6%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 199,70</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="7.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 08/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>4.038 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>2.210 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>105 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>4,8% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">4.038</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">2.210</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">105</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">4,8%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 0,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="8.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 09/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>18.886 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>6.830 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>374 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>5,5% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">18.886</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">6.830</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">374</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">5,5%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 0,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="9.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 09/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>30.763 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>23.508 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>590 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>2,5% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">3.081</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">27.682</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">1.554</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">21.954</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">91</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">499</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">5,9%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 149,93</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="10.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 10/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>23.066 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>19.034 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>863 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>4,5% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">3.153</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">19.913</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">2.074</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">16.960</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">92</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">771</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">4,4%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 149,88</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="11.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 12/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>8.448 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>4.173 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>302 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>7,2% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">8.448</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">4.173</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">302</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">7,2%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 0,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="12.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 14/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>1.540 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>915 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>49 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>5,4% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">1.540</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">915</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">49</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">5,4%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 0,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="13.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 17/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>24.182 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>16.179 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>4.543 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>28,1% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">4.048</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">20.134</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">2.696</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">13.483</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">195</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">4.348</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">7,2%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 149,74</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="14.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 18/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>27.793 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>21.483 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>704 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>3,3% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">2.639</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">25.154</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">1.711</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">19.772</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">101</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">603</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">5,9%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 149,93</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="15.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 19/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>4.519 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>2.141 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>174 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>8,1% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">4.519</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">2.141</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">174</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">8,1%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 0,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="16.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 19/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>3.915 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>2.753 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>231 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>8,4% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">3.915</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">2.753</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">231</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">8,4%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 0,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="17.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 20/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>2.077 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>1.271 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>60 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>4,7% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">2.077</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">1.271</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">60</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">4,7%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 0,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="18.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 20/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>3.500 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>2.307 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>203 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>8,8% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">3.500</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">2.307</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">203</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">8,8%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 0,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="19.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 23/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>18.926 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>14.979 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>893 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>6,0% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">2.868</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">16.058</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">1.799</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">13.180</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">83</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">810</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">4,6%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 149,93</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="20.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 24/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>17.118 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>13.855 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>5.777 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>41,7% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">7.195</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">9.923</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">5.357</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">8.498</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">392</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">5.385</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">7,3%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 149,30</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="21.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 24/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>4.475 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>3.279 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>212 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>6,5% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">4.475</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">3.279</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">212</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">6,5%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 0,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="22.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 25/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>4.345 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>3.455 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>172 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>5,0% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">4.345</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">3.455</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">172</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">5,0%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 0,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="23.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 25/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>35.933 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>28.836 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>903 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>3,1% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">2.012</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">33.921</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">840</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">27.996</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">49</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">854</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">5,8%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 141,53</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="24.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 26/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>21.645 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>16.169 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>3.633 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>22,5% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">6.759</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">14.886</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">5.014</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">11.155</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">319</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">3.314</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">6,4%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 106,40</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="25.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 27/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>27.908 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>21.506 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>798 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>3,7% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">1.501</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">26.407</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">914</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">20.592</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">36</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">762</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">3,9%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 102,42</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="26.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 28/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>7.698 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>5.160 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>359 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>7,0% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">7.698</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">5.160</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">359</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">0</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">7,0%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 0,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="27.jpg" alt="Post Image" class="post-image">
+                <div class="date-badge">PUBLICADO EM 30/03</div>
+                <div class="overlay">
+                    <div class="metrics-overlay">
+                        <div class="metric-item">
+                            <img src="icons/views.png" alt="Views">
+                            <span>13.547 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Impressões Totais</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/alcance.png" alt="Alcance">
+                            <span>10.733 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Contas Alcançadas</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/interacoes.png" alt="Interações">
+                            <span>871 <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Engajamento Total</small></span>
+                        </div>
+                        <div class="metric-item">
+                            <img src="icons/taxa_interaco.png" alt="Taxa">
+                            <span>8,1% <small style="font-size: 0.7em; opacity: 0.8; display: block; font-weight: 400;">Taxa de Engajamento</small></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Orgânico</th>
+                        <th colspan="2">Pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">10.560</td>
+                        <td class="label-cell">Impressões</td>
+                        <td class="value-cell">2.987</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">8.097</td>
+                        <td class="label-cell">Alcance</td>
+                        <td class="value-cell">2.636</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">320</td>
+                        <td class="label-cell">Interações</td>
+                        <td class="value-cell">551</td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">4,0%</td>
+                        <td class="label-cell">Engajamento</td>
+                        <td class="value-cell">0,0%</td>
+                    </tr>
+                    <tr class="invest-row">
+                        <td colspan="2" style="border:none;"></td>
+                        <td class="label-cell" style="color: var(--secondary)">Investimento</td>
+                        <td class="value-cell">R$ 28,28</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</body>
+</html>
+    
